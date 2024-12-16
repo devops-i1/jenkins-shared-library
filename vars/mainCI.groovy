@@ -21,6 +21,8 @@ def call() {
             stage('Release Software') {
                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 835817189095.dkr.ecr.us-east-1.amazonaws.com'
                 sh 'docker push 835817189095.dkr.ecr.us-east-1.amazonaws.com/expense-${component}:${TAG_NAME}'
+                sh 'aws eks update-kubeconfig --name dev-eks'
+                sh ''
             }
         } else {
             stage('Lint Code') {
