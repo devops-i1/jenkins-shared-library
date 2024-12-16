@@ -25,6 +25,8 @@ def call() {
             stage('Deploy to Dev') {
                 sh 'aws eks update-kubeconfig --name dev-eks'
                 sh 'argocd login $(kubectl get svc -n argocd argocd-server | awk \'{print $4}\' | tail -1) --username admin --password $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo) --insecure --grpc-web'
+                sh 'argocd app set ${component} --parameter appVersion=${TAG_NAME}'
+                sh 'argocd app sync ${component}'
             }
         } else {
             stage('Lint Code') {
